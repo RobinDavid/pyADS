@@ -20,27 +20,27 @@ The functionalities are:
 Basic example
 -------------
 
->>> from pyads import ADS
->>> file = "myfile.txt"
+    >>> from pyads import ADS
+    >>> file = "myfile.txt"
 
->>> handler = ADSStream(file)
->>> if handler.containStreams():
-...     for stream in handler.getStreams():
-...         print stream
-...
-helloworld.txt
-secondfile.jpg
+    >>> handler = ADSStream(file)
+    >>> if handler.containStreams():
+    ...     for stream in handler.getStreams():
+    ...         print stream
+    ...
+    helloworld.txt
+    secondfile.jpg
 
->>> fh = open("attached.txt","w").write("This is the content of an attached file.")
->>> fh.close()
->>> handler.addStream("attached.txt")
-True
->>> handler.getStreams()
-[u'helloworld.txt', u'secondfile.jpg', 'attached.txt']
->>> print handler.getStreamContent("attached.txt")
-This is the content of an attached file.
+    >>> fh = open("attached.txt","w").write("This is the content of an attached file.")
+    >>> fh.close()
+    >>> handler.addStream("attached.txt")
+    True
+    >>> handler.getStreams()
+    [u'helloworld.txt', u'secondfile.jpg', 'attached.txt']
+    >>> print handler.getStreamContent("attached.txt")
+    This is the content of an attached file.
 
->>> handler.removeStream("attached.txt")
-True
->>> handler.getStreams()
-[u'helloworld.txt', u'secondfile.jpg']
+    >>> handler.removeStream("attached.txt")
+    True
+    >>> handler.getStreams()
+    [u'helloworld.txt', u'secondfile.jpg']
