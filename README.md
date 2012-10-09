@@ -1,14 +1,15 @@
 pyADS
 =====
 
-Python module to manipulate Windows Alternate Data Stream (ADS) in Python.
+Python module to manipulate NTFS Alternate Data Stream (ADS) of files and directories in Python.
 Article link: http://robindavid.comli.com/pyads/
 
 How it works?
 -------------
 
-To access Alternate Data Streams of NTFS almost the only function(if not the only) is FindFirstStreamW
-of Windows. So this module is a direct interface to this function using ctypes.
+On Windows Vista, Windows Server 2003 and later, NTFS Alternate Data Streams can be accessed using the
+FindFirstStreamW and FindNextStreamW functions. So this module is a direct interface to this function
+using ctypes.
 The functionalities are:
 
 * List Alternate streams
