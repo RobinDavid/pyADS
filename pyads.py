@@ -52,7 +52,13 @@ class ADS():
         );
         http://msdn.microsoft.com/en-us/library/aa364424(v=vs.85).aspx
         '''
-        if file_infos is not None and myhandler is not None:
+        
+        if not file_infos.cStreamName:
+            return streamlist #directories don't have default ADS
+        else:
+            streamname = file_infos.cStreamName.split(":")[1]
+            if streamname: streamlist.append(streamname)
+        
             while kernel32.FindNextStreamW(myhandler, byref(file_infos)):
                 streamlist.append(file_infos.cStreamName.split(":")[1])
 
