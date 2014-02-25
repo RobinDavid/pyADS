@@ -2,7 +2,6 @@ pyADS
 =====
 
 Python module to manipulate NTFS Alternate Data Stream (ADS) of files and directories in Python.
-Article link: http://robindavid.comli.com/pyads/
 
 How it works?
 -------------
