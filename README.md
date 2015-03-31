@@ -59,3 +59,8 @@ Basic example
     True
     >>> handler.getStreams()
     [u'helloworld.txt', u'secondfile.jpg']
+
+License
+-------
+
+This software is MIT-Licensed
