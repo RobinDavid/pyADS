@@ -38,7 +38,7 @@ Basic example
     >>> from pyads import ADS
     >>> file = "myfile.txt"
 
-    >>> handler = ADSStream(file)
+    >>> handler = ADS(file)
     >>> if handler.containStreams():
     ...     for stream in handler.getStreams():
     ...         print stream
