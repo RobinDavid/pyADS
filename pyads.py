@@ -64,17 +64,17 @@ class ADS():
           __out       LPVOID lpFindStreamData, (return information about file in a WIN32_FIND_STREAM_DATA if 0 is given in infos_level
           __reserved  DWORD dwFlags (Reserved for future use. This parameter must be zero.) cf: doc
         );
-        http://msdn.microsoft.com/en-us/library/aa364424(v=vs.85).aspx
+        https://msdn.microsoft.com/en-us/library/aa364424(v=vs.85).aspx
         '''
 
-        if not file_infos.cStreamName:
-            return streamlist #directories don't have default ADS
-        else:
+        if file_infos.cStreamName:
             streamname = file_infos.cStreamName.split(":")[1]
             if streamname: streamlist.append(streamname)
 
             while kernel32.FindNextStreamW(myhandler, byref(file_infos)):
                 streamlist.append(file_infos.cStreamName.split(":")[1])
+
+        kernel32.FindClose(myhandler) #Close the handle
 
         return streamlist
 
@@ -87,23 +87,20 @@ class ADS():
     def full_filename(self, stream):
         return "%s:%s" % (self.filename, stream)
 
-    def add_stream_from_file(self, newfile, stream):
-        #Read file content
-        if newfile is None:
-            content = b''
+    def add_stream_from_file(self, filename):
+        fullname = self.full_filename(os.path.basename(filename))
+        if os.path.exists(fullname):
+            print("Stream name already exists")
+            return False
         else:
-            if not os.path.exists(newfile):
-                return False
-            fd = open(newfile, "rb")
-            content = fd.read()
+            with open(filename, "rb") as f:
+                content = f.read()
+            #Now write it as stream ADS
+            fd = open(fullname, "wb")
+            fd.write(content)
             fd.close()
-
-        #Now write it as stream ADS
-        fd = open(self.full_filename(stream), "wb")
-        fd.write(content)
-        fd.close()
-        self.streams.append(stream)
-        return True
+            self.streams.append(filename)
+            return True
 
     def delete_stream(self, stream):
         try:
