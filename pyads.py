@@ -21,7 +21,7 @@ kernel32 = windll.kernel32
 LPSTR     = c_wchar_p
 DWORD     = c_ulong
 LONG      = c_ulong
-WCHAR     = c_wchar * 164
+WCHAR     = c_wchar * 296
 LONGLONG  = c_longlong
 
 class LARGE_INTEGER_UNION(Structure):
