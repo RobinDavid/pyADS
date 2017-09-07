@@ -36,7 +36,7 @@ Basic example
 
     >>> handler = ADS(file)
     >>> if handler.has_streams():
-    ...     for stream in handler():
+    ...     for stream in handler:
     ...         print(stream)
     ...
     helloworld.txt
