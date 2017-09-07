@@ -22,7 +22,6 @@ Methods
 All methods are grouped in an ADS class that allow doing multiple operations on the given file.
 Available methods are:
 
-* **getFileName** return the file name on which the ADS manager belong to
 * **getStreams** return a list of streams names
 * **containStreams** return True if the file have alternate Streams
 * **addStream** allow to add a stream to the file
@@ -39,28 +38,27 @@ Basic example
     >>> file = "myfile.txt"
 
     >>> handler = ADS(file)
-    >>> if handler.containStreams():
-    ...     for stream in handler.getStreams():
-    ...         print stream
+    >>> if handler.has_streams():
+    ...     for stream in handler():
+    ...         print(stream)
     ...
     helloworld.txt
     secondfile.jpg
 
-    >>> fh = open("attached.txt","w").write("This is the content of an attached file.")
-    >>> fh.close()
-    >>> handler.addStream("attached.txt")
-    True
-    >>> handler.getStreams()
-    [u'helloworld.txt', u'secondfile.jpg', 'attached.txt']
-    >>> print handler.getStreamContent("attached.txt")
-    This is the content of an attached file.
 
-    >>> handler.removeStream("attached.txt")
+    >>> handler.add_stream_from_file("attached.txt")
     True
-    >>> handler.getStreams()
-    [u'helloworld.txt', u'secondfile.jpg']
+    >>> list(handler)
+    [u'helloworld.txt', u'secondfile.jpg', 'attached.txt']
+    >>> print(handler.get_stream_content("attached.txt"))
+    This is the content of an attached file.
 
 License
 -------
 
 This software is MIT-Licensed
+
+Credits
+-------
+
+Thanks for @Alexey-T and @wesdawg for their improvments

@@ -46,15 +46,14 @@ class WIN32_FIND_STREAM_DATA(Structure):
       LARGE_INTEGER StreamSize;
       WCHAR         cStreamName[MAX_PATH + 36];
     } WIN32_FIND_STREAM_DATA, *PWIN32_FIND_STREAM_DATA;
-    ''' 
+    '''
 
 class ADS():
-    def __init__(self, file):
-        self.filename = file
-        self.streams = self.retrieveStreams()
-          
-        
-    def retrieveStreams(self):
+    def __init__(self, filename):
+        self.filename = filename
+        self.streams = self.init_streams()
+
+    def init_streams(self):
         file_infos = WIN32_FIND_STREAM_DATA()
         streamlist = list()
         myhandler = kernel32.FindFirstStreamW (LPSTR(self.filename), 0, byref(file_infos), 0)
@@ -67,70 +66,55 @@ class ADS():
         );
         http://msdn.microsoft.com/en-us/library/aa364424(v=vs.85).aspx
         '''
-        
+
         if not file_infos.cStreamName:
             return streamlist #directories don't have default ADS
         else:
             streamname = file_infos.cStreamName.split(":")[1]
             if streamname: streamlist.append(streamname)
-        
+
             while kernel32.FindNextStreamW(myhandler, byref(file_infos)):
                 streamlist.append(file_infos.cStreamName.split(":")[1])
 
         return streamlist
-    
-    def getFileName(self):
-        return self.filename
-    
-    def getStreams(self):
-        return self.streams
-    
-    def containStreams(self):
-        return len(self.getStreams()) != 0
-    
-    def addStream(self,newfile):
-        #Read in the file content
-        if not os.path.exists(newfile):
-            return False
-        if os.path.exists("%s:%s" % (self.filename, newfile)):
-            print "A Stream with the same name already exist."
-            return False
-        
-        fd = open(newfile, "rb")
-        content = fd.read()
-        fd.close()
+
+    def __iter__(self):
+        return iter(self.streams)
+
+    def has_streams(self):
+        return len(self.streams) > 0
+
+    def full_filename(self, stream):
+        return "%s:%s" % (self.filename, stream)
+
+    def add_stream_from_file(self, newfile, stream):
+        #Read file content
+        if newfile is None:
+            content = b''
+        else:
+            if not os.path.exists(newfile):
+                return False
+            fd = open(newfile, "rb")
+            content = fd.read()
+            fd.close()
+
         #Now write it as stream ADS
-        fd = open("%s:%s" % (self.filename, newfile), "wb")
+        fd = open(self.full_filename(stream), "wb")
         fd.write(content)
         fd.close()
-        self.streams.append(newfile)
+        self.streams.append(stream)
         return True
-    
-    def removeStream(self,stream):
+
+    def delete_stream(self, stream):
         try:
-            os.remove("%s:%s" % (self.filename, stream))
+            os.remove(self.full_filename(stream))
             self.streams.remove(stream)
             return True
-        except Exception as e:
+        except:
             return False
-    
-    def getStreamContent(self,stream):
-        fd = open("%s:%s" %(self.filename, stream), "rb")
-        content = fd.read()
-        fd.close()       
-        return content
-    
-    def extractStream(self, stream):
-        fd = open("%s:%s" %(self.filename, stream), "rb")
+
+    def get_stream_content(self, stream):
+        fd = open(self.full_filename(stream), "rb")
         content = fd.read()
         fd.close()
-        if not os.path.exists(stream):
-            fd = open(stream, "wb")
-            fd.write(content)
-            fd.close()
-        else:
-            print "File with the same name already exist"
-    
-    def extractAllStreams(self):
-        for s in self.streams:
-            self.extractStream(s)    
+        return content
