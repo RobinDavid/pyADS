@@ -22,14 +22,11 @@ Methods
 All methods are grouped in an ADS class that allow doing multiple operations on the given file.
 Available methods are:
 
-* **getStreams** return a list of streams names
-* **containStreams** return True if the file have alternate Streams
-* **addStream** allow to add a stream to the file
-* **removeStream** remove the given stream of the file
-* **getStreamContent** return the content of the given stream
-* **extractStream** extract the content of a stream in file with the same name
-* **extractAllStreams** quick way to extract all stream attached to a file
-
+* **__iter__** standard python way to iterate over all stream names
+* **has_streams** return True if the file have alternate Streams
+* **add_stream_from_file** add a file as stream to the file
+* **delete_stream** remove the given stream of the file
+* **get_stream_content** return the content of the given stream
 
 Basic example
 -------------
