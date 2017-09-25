@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
 Copyright © 2015, Robin David - MIT-Licensed
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
@@ -88,18 +89,24 @@ class ADS():
         return "%s:%s" % (self.filename, stream)
 
     def add_stream_from_file(self, filename):
-        fullname = self.full_filename(os.path.basename(filename))
+        if os.path.exists(filename):
+            with open(filename, "rb") as f:
+                content = f.read()
+            return self.add_stream_from_string(filename, content)
+        else:
+            print("Could not find file: {0}".format(filename))
+            return False
+
+    def add_stream_from_string(self, stream_name, string):
+        fullname = self.full_filename(os.path.basename(stream_name))
         if os.path.exists(fullname):
             print("Stream name already exists")
             return False
         else:
-            with open(filename, "rb") as f:
-                content = f.read()
-            #Now write it as stream ADS
             fd = open(fullname, "wb")
-            fd.write(content)
+            fd.write(string)
             fd.close()
-            self.streams.append(filename)
+            self.streams.append(stream_name)
             return True
 
     def delete_stream(self, stream):
