@@ -57,6 +57,10 @@ class ADS():
     def init_streams(self):
         file_infos = WIN32_FIND_STREAM_DATA()
         streamlist = list()
+
+        findFirstStreamW = kernel32.FindFirstStreamW
+        findFirstStreamW.restype = c_void_p
+
         myhandler = kernel32.FindFirstStreamW (LPSTR(self.filename), 0, byref(file_infos), 0)
         '''
         HANDLE WINAPI FindFirstStreamW(
@@ -67,15 +71,16 @@ class ADS():
         );
         https://msdn.microsoft.com/en-us/library/aa364424(v=vs.85).aspx
         '''
+        p = c_void_p(myhandler)
 
         if file_infos.cStreamName:
             streamname = file_infos.cStreamName.split(":")[1]
             if streamname: streamlist.append(streamname)
 
-            while kernel32.FindNextStreamW(myhandler, byref(file_infos)):
+            while kernel32.FindNextStreamW(p, byref(file_infos)):
                 streamlist.append(file_infos.cStreamName.split(":")[1])
 
-        kernel32.FindClose(myhandler) #Close the handle
+        kernel32.FindClose(p)  # Close the handle
 
         return streamlist
 
